@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>谁在黑我家鸽鸽 - 主页</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            background-color: #000;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .welcome-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-title {
+            font-size: 3rem;
+            margin-bottom: 3rem;
+            color: var(--inputColor);
+        }
+
+        .welcome-buttons {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .welcome-button {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border: 2px solid var(--inputColor);
+            background: transparent;
+            color: var(--inputColor);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .welcome-button:hover {
+            background: var(--inputColor);
+            color: var(--backgroundColor);
+        }
+
+        .char {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .char:hover {
+            transform: translateY(-5px);
+        }
+
+        /* 浮动球样式 */
+        .floating-balls {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .ball {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-20px) translateX(20px);
+            }
+            50% {
+                transform: translateY(0) translateX(40px);
+            }
+            75% {
+                transform: translateY(20px) translateX(20px);
+            }
+            100% {
+                transform: translateY(0) translateX(0);
+            }
+        }
+
+        /* 登录按钮样式 */
+        .bubbly-button {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            display: inline-block;
+            font-size: 1.5em;
+            padding: 1.2em 3em;
+            margin-top: 50px;
+            -webkit-appearance: none;
+            appearance: none;
+            background-color: transparent;
+            color: #fff;
+            border-radius: 4px;
+            border: 2px solid #fff;
+            cursor: pointer;
+            position: relative;
+            transition: transform ease-in 0.1s, box-shadow ease-in 0.25s;
+            box-shadow: 0 2px 25px rgba(255, 255, 255, 0.2);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .bubbly-button:focus {
+            outline: 0;
+        }
+
+        .bubbly-button:before, .bubbly-button:after {
+            position: absolute;
+            content: '';
+            display: block;
+            width: 140%;
+            height: 100%;
+            left: -20%;
+            z-index: -1000;
+            transition: all ease-in-out 0.5s;
+            background-repeat: no-repeat;
+        }
+
+        .bubbly-button:before {
+            display: none;
+            top: -75%;
+            background-image:  
+                radial-gradient(circle, rgba(255, 255, 255, 0.2) 20%, transparent 20%),
+                radial-gradient(circle, transparent 20%, rgba(255, 255, 255, 0.2) 20%, transparent 30%),
+                radial-gradient(circle, rgba(255, 255, 255, 0.2) 20%, transparent 20%), 
+                radial-gradient(circle, rgba(255, 255, 255, 0.2) 20%, transparent 20%),
+                radial-gradient(circle, transparent 10%, rgba(255, 255, 255, 0.2) 15%, transparent 20%),
+                radial-gradient(circle, rgba(255, 255, 255, 0.2) 20%, transparent 20%),
+                radial-gradient(circle, rgba(255, 255, 255, 0.2) 20%, transparent 20%),
+                radial-gradient(circle, rgba(255, 255, 255, 0.2) 20%, transparent 20%),
+                radial-gradient(circle, rgba(255, 255, 255, 0.2) 20%, transparent 20%);
+            background-size: 10% 10%, 20% 20%, 15% 15%, 20% 20%, 18% 18%, 10% 10%, 15% 15%, 10% 10%, 18% 18%;
+        }
+
+        .bubbly-button:after {
+            display: none;
+            bottom: -75%;
+            background-image:  
+                radial-gradient(circle, rgba(255, 255, 255, 0.2) 20%, transparent 20%), 
+                radial-gradient(circle, rgba(255, 255, 255, 0.2) 20%, transparent 20%),
+                radial-gradient(circle, transparent 10%, rgba(255, 255, 255, 0.2) 15%, transparent 20%),
+                radial-gradient(circle, rgba(255, 255, 255, 0.2) 20%, transparent 20%),
+                radial-gradient(circle, rgba(255, 255, 255, 0.2) 20%, transparent 20%),
+                radial-gradient(circle, rgba(255, 255, 255, 0.2) 20%, transparent 20%),
+                radial-gradient(circle, rgba(255, 255, 255, 0.2) 20%, transparent 20%);
+            background-size: 15% 15%, 20% 20%, 18% 18%, 20% 20%, 15% 15%, 10% 10%, 20% 20%;
+        }
+
+        .bubbly-button:active {
+            transform: scale(0.9);
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 2px 25px rgba(255, 255, 255, 0.1);
+        }
+
+        .bubbly-button.animate:before {
+            display: block;
+            animation: topBubbles ease-in-out 0.75s forwards;
+        }
+
+        .bubbly-button.animate:after {
+            display: block;
+            animation: bottomBubbles ease-in-out 0.75s forwards;
+        }
+
+        @keyframes topBubbles {
+            0% {
+                background-position: 5% 90%, 10% 90%, 10% 90%, 15% 90%, 25% 90%, 25% 90%, 40% 90%, 55% 90%, 70% 90%;
+            }
+            50% {
+                background-position: 0% 80%, 0% 20%, 10% 40%, 20% 0%, 30% 30%, 22% 50%, 50% 50%, 65% 20%, 90% 30%;
+            }
+            100% {
+                background-position: 0% 70%, 0% 10%, 10% 30%, 20% -10%, 30% 20%, 22% 40%, 50% 40%, 65% 10%, 90% 20%;
+                background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+            }
+        }
+
+        @keyframes bottomBubbles {
+            0% {
+                background-position: 10% -10%, 30% 10%, 55% -10%, 70% -10%, 85% -10%, 70% -10%, 70% 0%;
+            }
+            50% {
+                background-position: 0% 80%, 20% 80%, 45% 60%, 60% 100%, 75% 70%, 95% 60%, 105% 0%;
+            }
+            100% {
+                background-position: 0% 90%, 20% 90%, 45% 70%, 60% 110%, 75% 80%, 95% 70%, 110% 10%;
+                background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-balls" id="floatingBalls"></div>
+    <div class="welcome-container">
+        <h1 class="welcome-title playful-title">
+            <span class="char c1">谁</span>
+            <span class="char c2">在</span>
+            <span class="char c3">黑</span>
+            <span class="char c4">我</span>
+            <span class="char c5">家</span>
+            <span class="char c6" style="color: #FFB7C5;">鸽</span>
+            <span class="char c7" style="color: #FFB7C5;">鸽</span>
+        </h1>
+        <a href="/index" class="bubbly-button">立即登录</a>
+    </div>
+
+    <script>
+        // 创建浮动球
+        function createFloatingBalls() {
+            const container = document.getElementById('floatingBalls');
+            const ballCount = 15;
+            
+            for (let i = 0; i < ballCount; i++) {
+                const ball = document.createElement('div');
+                ball.className = 'ball';
+                
+                // 随机大小
+                const size = Math.random() * 100 + 50;
+                ball.style.width = `${size}px`;
+                ball.style.height = `${size}px`;
+                
+                // 随机位置
+                ball.style.left = `${Math.random() * 100}%`;
+                ball.style.top = `${Math.random() * 100}%`;
+                
+                // 随机动画延迟
+                ball.style.animationDelay = `${Math.random() * 15}s`;
+                
+                container.appendChild(ball);
+            }
+        }
+
+        // 页面加载时创建浮动球
+        window.addEventListener('load', createFloatingBalls);
+
+        // 按钮动画
+        var animateButton = function(e) {
+            e.preventDefault();
+            e.target.classList.remove('animate');
+            e.target.classList.add('animate');
+            
+            // 延迟跳转，等待动画完成
+            setTimeout(function(){
+                window.location.href = '/login';
+            }, 500);
+        };
+
+        var bubblyButtons = document.getElementsByClassName("bubbly-button");
+        for (var i = 0; i < bubblyButtons.length; i++) {
+            bubblyButtons[i].addEventListener('click', animateButton, false);
+        }
+    </script>
+</body>
+</html> 
