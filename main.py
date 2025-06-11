@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Dict, Any
 
 from config.report_config import get_config
-from database.db_utils import DatabaseUtils
+from database.db_utils import DatabaseManager
 from datacrawl.crawler import WeiboCrawler
 from data_processing.data_cleaner import DataCleaner
 from sentiment.sentiment_analyzer import SentimentAnalyzer
@@ -25,7 +25,7 @@ class CelebritySentimentSystem:
         self._setup_logging()
         
         # 初始化数据库连接
-        self.db_utils = DatabaseUtils(self.config['db_url'])
+        self.db_utils = DatabaseManager(self.config['db_url'])
         
         # 初始化各个模块
         self._init_modules()
@@ -158,7 +158,7 @@ class CelebritySentimentSystem:
     def generate_report_now(self, template_id: int):
         """立即生成报告"""
         try:
-            self.logger.info(f"开始生成报告，模板ID: {template_id}")
+            self.logger.info(f"开始生成报告,模板ID: {template_id}")
             success = self.report_generator.generate_report(template_id)
             if success:
                 self.logger.info("报告生成成功")
