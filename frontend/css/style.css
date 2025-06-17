@@ -315,24 +315,50 @@ body.show-password #beam-confirm {
   position: fixed;
   top: 20px;
   right: 20px;
-  padding: 1rem 2rem;
-  border-radius: 8px;
+  padding: 15px 20px;
+  border-radius: 4px;
   color: white;
-  font-weight: bold;
+  font-size: 14px;
   z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 300px;
+  max-width: 400px;
   animation: slideIn 0.3s ease-out;
 }
 
 .notification.success {
-  background-color: #2ecc71;
+  background-color: #4CAF50;
 }
 
 .notification.error {
-  background-color: #f1503f;
+  background-color: #f44336;
 }
 
 .notification.info {
-  background-color: #3498db;
+  background-color: #2196F3;
+}
+
+.notification.warning {
+  background-color: #ff9800;
+}
+
+.notification .close-button {
+  margin-left: 10px;
+  cursor: pointer;
+  font-size: 20px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.notification .close-button:hover {
+  opacity: 1;
+}
+
+.notification.fade-out {
+  animation: slideOut 0.3s ease-in forwards;
 }
 
 @keyframes slideIn {
@@ -343,6 +369,81 @@ body.show-password #beam-confirm {
   to {
     transform: translateX(0);
     opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* 加载状态样式 */
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 按钮加载状态 */
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+button:disabled .spinner {
+  display: inline-block;
+}
+
+/* 表单验证样式 */
+.form-group.error input {
+  border-color: #f44336;
+}
+
+.form-group.error .error-message {
+  color: #f44336;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* 输入框焦点效果 */
+input:focus {
+  outline: none;
+  border-color: #2196F3;
+  box-shadow: 0 0 0 2px rgba(33,150,243,0.2);
+}
+
+/* 按钮悬停效果 */
+button:not(:disabled):hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+  .notification {
+    min-width: auto;
+    width: calc(100% - 40px);
+    right: 20px;
+    left: 20px;
   }
 }
 
@@ -658,4 +759,58 @@ textarea {
 .back-button:hover {
   background: var(--inputColor);
   color: var(--bgColor);
+} 
+
+/* 记住我复选框样式 */
+.remember-me {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+    user-select: none;
+}
+
+.remember-me input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--inputColor);
+    border-radius: 3px;
+    margin-right: 8px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.remember-me input[type="checkbox"]:checked {
+    background-color: var(--inputColor);
+}
+
+.remember-me input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    color: var(--backgroundColor);
+    font-size: 12px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.remember-me input[type="checkbox"]:hover {
+    border-color: var(--primaryColor);
+    box-shadow: 0 0 5px rgba(255, 183, 197, 0.3);
+}
+
+.remember-me label {
+    color: var(--inputColor);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    white-space: nowrap;
+}
+
+.remember-me label:hover {
+    color: var(--primaryColor);
 } 

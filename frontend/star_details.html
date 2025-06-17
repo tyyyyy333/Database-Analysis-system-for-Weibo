@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>明星舆情分析系统 - 明星详情</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/star_detail.css">
+</head>
+<body>
+    <div class="floating-balls"></div>
+
+    <div class="sidebar">
+        <div class="nav-item" onclick="window.location.href='/home'">
+            <i class="ri-home-line"></i>
+            <span>首页</span>
+        </div>
+        <div class="nav-item" onclick="window.location.href='/star_dashboard'">
+            <i class="ri-user-star-line"></i>
+            <span>明星管理</span>
+        </div>
+        <div class="nav-item" onclick="window.location.href='/report_dashboard'">
+            <i class="ri-file-list-3-line"></i>
+            <span>报告管理</span>
+        </div>
+        <div class="nav-item" onclick="window.location.href='/settings'">
+            <i class="ri-settings-4-line"></i>
+            <span>系统设置</span>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="star-header">
+                <div class="star-avatar" id="starAvatar"></div>
+                <div class="star-basic-info">
+                    <div class="star-name" id="starName"></div>
+                    <a class="star-url" id="starUrl" target="_blank">
+                        <i class="ri-link"></i>
+                        <span id="starUrlText"></span>
+                    </a>
+                    <div class="star-status" id="starStatus"></div>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('overview')">
+                    <i class="ri-dashboard-line"></i>
+                    概览
+                </button>
+                <button class="tab-btn" onclick="switchTab('hater')">
+                    <i class="ri-user-search-line"></i>
+                    黑粉分析
+                </button>
+                <a href="/star_dashboard" class="back-btn">
+                    <i class="ri-arrow-left-line"></i>
+                    返回列表
+                </a>
+            </div>
+
+            <div id="overview" class="tab-content active">
+                <div class="star-info">
+                    <div class="star-intro" id="starIntro"></div>
+                    <div class="star-metrics">
+                        <div class="metric-card">
+                            <div class="metric-value" id="fansCount">0</div>
+                            <div class="metric-label">粉丝数</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="postCount">0</div>
+                            <div class="metric-label">微博数</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="blackFanCount">0</div>
+                            <div class="metric-label">黑粉数</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="sentimentScore">0</div>
+                            <div class="metric-label">情感得分</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-section">
+                    <div class="section-title">数据趋势</div>
+                    <div class="chart-grid">
+                        <div class="chart-card">
+                            <div class="chart-title">
+                                <i class="ri-line-chart-line"></i>
+                                热度趋势
+                            </div>
+                            <div class="chart-placeholder" id="heatTrendChart">
+                                等待数据加载...
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <div class="chart-title">
+                                <i class="ri-bar-chart-line"></i>
+                                互动分析
+                            </div>
+                            <div class="chart-placeholder" id="interactionChart">
+                                等待数据加载...
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <div class="chart-title">
+                                <i class="ri-pie-chart-line"></i>
+                                情感分布
+                            </div>
+                            <div class="chart-placeholder" id="sentimentChart">
+                                等待数据加载...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="hater" class="tab-content">
+                <div class="hater-analysis">
+                    <div class="hater-stats">
+                        <div class="hater-stat-card">
+                            <h3>黑粉总数</h3>
+                            <div class="value" id="total-hater-count">0</div>
+                        </div>
+                        <div class="hater-stat-card">
+                            <h3>活跃黑粉</h3>
+                            <div class="value" id="active-hater-count">0</div>
+                        </div>
+                        <div class="hater-stat-card">
+                            <h3>黑粉增长率</h3>
+                            <div class="value" id="hater-growth-rate">0%</div>
+                        </div>
+                        <div class="hater-stat-card">
+                            <h3>黑粉影响力</h3>
+                            <div class="value" id="hater-influence-score">0</div>
+                        </div>
+                    </div>
+
+                    <div class="hater-charts">
+                        <div class="hater-chart">
+                            <h3>黑粉活跃度趋势</h3>
+                            <div id="hater-activity-chart"></div>
+                        </div>
+                        <div class="hater-chart">
+                            <h3>黑粉地域分布</h3>
+                            <div id="hater-location-chart"></div>
+                        </div>
+                        <div class="hater-chart">
+                            <h3>黑粉情感分析</h3>
+                            <div id="hater-sentiment-chart"></div>
+                        </div>
+                    </div>
+
+                    <div class="hater-analysis-grid">
+                        <div class="analysis-card">
+                            <h3>分数分布</h3>
+                            <div class="score-distribution" id="score-distribution-chart"></div>
+                        </div>
+                        <div class="analysis-card">
+                            <h3>性别分布</h3>
+                            <div class="gender-distribution" id="gender-distribution-chart"></div>
+                        </div>
+                        <div class="analysis-card">
+                            <h3>时间分布</h3>
+                            <div class="time-distribution" id="time-distribution-chart"></div>
+                        </div>
+                        <div class="analysis-card">
+                            <h3>风险等级</h3>
+                            <div class="risk-level" id="risk-level-chart"></div>
+                        </div>
+                    </div>
+
+                    <div class="hater-ranking">
+                        <h3>黑粉排名</h3>
+                        <div class="ranking-list" id="hater-ranking-list">
+                            <!-- 排名列表将通过JavaScript动态填充 -->
+                        </div>
+                    </div>
+
+                    <div class="hater-warning">
+                        <h3>黑粉预警</h3>
+                        <ul class="warning-list" id="warning-list">
+                            <!-- 预警列表将通过JavaScript动态填充 -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.2/dist/echarts.min.js"></script>
+    <script src="/js/star_detail.js"></script>
+</body>
+</html> 
