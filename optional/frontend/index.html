@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>谁在黑我家鸽鸽 - 登录</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --backgroundColor: #1a1a1a;
+            --textColor: #ffffff;
+            --inputColor: #FFB7C5;
+            --primaryColor: #FFB7C5;
+        }
+
+        /* 浮动球样式 */
+        .floating-balls {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .floating-ball {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            animation: float 15s infinite linear;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(100px, 100px) rotate(90deg);
+            }
+            50% {
+                transform: translate(0, 200px) rotate(180deg);
+            }
+            75% {
+                transform: translate(-100px, 100px) rotate(270deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+
+        .ball-1 { width: 100px; height: 100px; top: 10%; left: 5%; animation-delay: 0s; }
+        .ball-2 { width: 150px; height: 150px; top: 60%; left: 85%; animation-delay: -2s; }
+        .ball-3 { width: 80px; height: 80px; top: 80%; left: 15%; animation-delay: -4s; }
+        .ball-4 { width: 120px; height: 120px; top: 30%; left: 75%; animation-delay: -6s; }
+        .ball-5 { width: 90px; height: 90px; top: 70%; left: 35%; animation-delay: -8s; }
+        .ball-6 { width: 110px; height: 110px; top: 20%; left: 45%; animation-delay: -3s; }
+        .ball-7 { width: 130px; height: 130px; top: 50%; left: 25%; animation-delay: -5s; }
+        .ball-8 { width: 95px; height: 95px; top: 40%; left: 65%; animation-delay: -7s; }
+        .ball-9 { width: 140px; height: 140px; top: 15%; left: 85%; animation-delay: -1s; }
+        .ball-10 { width: 85px; height: 85px; top: 75%; left: 55%; animation-delay: -9s; }
+        .ball-11 { width: 115px; height: 115px; top: 25%; left: 15%; animation-delay: -2.5s; }
+        .ball-12 { width: 105px; height: 105px; top: 85%; left: 75%; animation-delay: -4.5s; }
+        .ball-13 { width: 125px; height: 125px; top: 45%; left: 45%; animation-delay: -6.5s; }
+        .ball-14 { width: 95px; height: 95px; top: 65%; left: 25%; animation-delay: -8.5s; }
+        .ball-15 { width: 135px; height: 135px; top: 35%; left: 85%; animation-delay: -1.5s; }
+
+        /* 返回按钮样式 */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            padding: 12px 24px;
+            background: rgba(114, 114, 114, 0.1);
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--inputColor);
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .back-button::before {
+            content: "←";
+            font-size: 1.2rem;
+            margin-right: 8px;
+        }
+
+        /* 表单样式 */
+        .login-container,
+        .register-container {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #FFB7C5;
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 20px rgba(255, 183, 197, 0.1);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-header h1 {
+            font-size: 2.5rem;
+            color: var(--textColor);
+            margin-bottom: 15px;
+        }
+
+        .login-header p {
+            font-size: 1.2rem;
+            color: var(--inputColor);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 12px;
+            color: #FFB7C5;
+            font-size: 1.1rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 15px 20px;
+            background: transparent;
+            border: 2px solid #FFB7C5;
+            border-radius: 10px;
+            color: #FFB7C5;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: #FFB7C5;
+            box-shadow: 0 0 10px rgba(255, 183, 197, 0.2);
+        }
+
+        .input-wrapper input.error {
+            border-color: #ffa7a7;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            color: #FFB7C5;
+            border: 2px solid #FFB7C5;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            background: #FFB7C5;
+            color: #000;
+            box-shadow: 0 0 15px rgba(255, 183, 197, 0.3);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 25px;
+            color: #FFB7C5;
+            font-size: 1.1rem;
+        }
+
+        .register-link a {
+            color: #FFB7C5;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .eye-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--inputColor);
+            padding: 5px;
+            transition: all 0.3s ease;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .eye-icon:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .eye-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .switch-auth {
+            text-align: center;
+            margin-top: 1rem;
+            color: var(--inputColor);
+        }
+
+        .switch-auth a {
+            color: var(--inputColor);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-balls" id="floatingBalls"></div>
+    <div class="back-button" onclick="window.location.href='/'">
+        返回主页
+    </div>
+    <div class="landing-page">
+        <div class="container">
+            <div class="floating-ball ball-1"></div>
+            <div class="floating-ball ball-2"></div>
+            <div class="floating-ball ball-3"></div>
+            <div class="floating-ball ball-4"></div>
+            <div class="floating-ball ball-5"></div>
+            <div class="floating-ball ball-6"></div>
+            <div class="floating-ball ball-7"></div>
+            <div class="floating-ball ball-8"></div>
+            <div class="floating-ball ball-9"></div>
+            <div class="floating-ball ball-10"></div>
+            <div class="floating-ball ball-11"></div>
+            <div class="floating-ball ball-12"></div>
+            <div class="floating-ball ball-13"></div>
+            <div class="floating-ball ball-14"></div>
+            <div class="floating-ball ball-15"></div>
+            
+            <h1 class="site-title playful-title">
+                <span class="char c1">谁</span>
+                <span class="char c2">在</span>
+                <span class="char c3">黑</span>
+                <span class="char c4">我</span>
+                <span class="char c5">家</span>
+                <span class="char c6" style="color: #FFB7C5;">鸽</span>
+                <span class="char c7" style="color: #FFB7C5;">鸽</span>
+            </h1>
+
+            <div class="auth-container">
+                <!-- 登录表单 -->
+                <div class="auth-box" id="login-box">
+                    <div class="login-header">
+                        <h1>登录</h1>
+                        <p>欢迎回来！</p>
+                    </div>
+                    <form id="loginFormElement" onsubmit="return handleLogin(event)">
+                        <div class="form-group">
+                            <label for="loginUsername">用户名</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="loginUsername" name="username" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">密码</label>
+                            <div class="input-wrapper">
+                                <input type="password" id="loginPassword" name="password" required>
+                                <span class="eye-icon" onclick="togglePassword('loginPassword')">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary" id="login-button">登录</button>
+                    </form>
+                    <div class="switch-auth">
+                        还没有账号？<a href="#" onclick="toggleForms()">立即注册</a>
+                    </div>
+                </div>
+
+                <!-- 注册表单 -->
+                <div class="auth-box" id="register-box" style="display: none;">
+                    <div class="login-header">
+                        <h1>注册</h1>
+                        <p>创建您的账号</p>
+                    </div>
+                    <form id="registerFormElement" onsubmit="return handleRegister(event)">
+                        <div class="form-group">
+                            <label for="registerUsername">用户名</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="registerUsername" name="username" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">邮箱</label>
+                            <div class="input-wrapper">
+                                <input type="email" id="registerEmail" name="email" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">密码</label>
+                            <div class="input-wrapper">
+                                <input type="password" id="registerPassword" name="password" required>
+                                <span class="eye-icon" onclick="togglePassword('registerPassword')">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">确认密码</label>
+                            <div class="input-wrapper">
+                                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                                <span class="eye-icon" onclick="togglePassword('confirmPassword')">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary" id="register-button">注册</button>
+                    </form>
+                    <div class="switch-auth">
+                        已有账号？<a href="#" onclick="toggleForms()">立即登录</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 切换表单显示
+        function toggleForms() {
+            const loginForm = document.getElementById('login-box');
+            const registerForm = document.getElementById('register-box');
+            if (loginForm.style.display === 'none') {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+            } else {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+            }
+        }
+
+        // 切换密码显示
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        // 处理登录
+        async function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password }),
+                });
+
+                const data = await response.json();
+                if (data.status === 'success') {
+                    window.location.href = '/home';
+                } else {
+                    alert(data.message || '登录失败');
+                }
+            } catch (error) {
+                alert('登录失败，请稍后重试');
+            }
+        }
+
+        // 处理注册
+        async function handleRegister(event) {
+            event.preventDefault();
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                alert('两次输入的密码不一致');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, email, password }),
+                });
+
+                const data = await response.json();
+                if (data.status === 'success') {
+                    window.location.href = '/home';
+                } else {
+                    alert(data.message || '注册失败');
+                }
+            } catch (error) {
+                alert('注册失败，请稍后重试');
+            }
+        }
+
+        // 创建浮动球
+        function createFloatingBalls() {
+            const container = document.getElementById('floatingBalls');
+            for (let i = 1; i <= 15; i++) {
+                const ball = document.createElement('div');
+                ball.className = `floating-ball ball-${i}`;
+                container.appendChild(ball);
+            }
+        }
+
+        // 页面加载完成后创建浮动球
+        window.onload = createFloatingBalls;
+    </script>
+</body>
+</html>
