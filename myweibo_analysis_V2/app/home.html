@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>谁在黑我家鸽鸽 - 主页</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :root {
+            --backgroundColor: #000;
+            --inputColor: #fff;
+            --primaryColor: #FFB7C5;
+            --secondaryColor: #FF69B4;
+            --cardBg: rgba(255, 255, 255, 0.05);
+            --borderColor: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--backgroundColor);
+            color: var(--inputColor);
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .floating-balls {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .ball {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-20px) translateX(20px); }
+            50% { transform: translateY(0) translateX(40px); }
+            75% { transform: translateY(20px) translateX(20px); }
+            100% { transform: translateY(0) translateX(0); }
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 80px;
+            background: rgba(0, 0, 0, 0.8);
+            border-right: 2px solid var(--inputColor);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+        }
+
+        .sidebar:hover {
+            width: 200px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            color: var(--inputColor);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin: 5px 0;
+            border-radius: 10px;
+            margin: 5px 10px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--primaryColor);
+        }
+
+        .nav-item i {
+            font-size: 1.5rem;
+            min-width: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item span {
+            opacity: 0;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-size: 1rem;
+            margin-left: 10px;
+        }
+
+        .sidebar:hover .nav-item span {
+            opacity: 1;
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--primaryColor);
+        }
+
+        .nav-item.active i {
+            color: var(--primaryColor);
+        }
+
+        .main-content {
+            margin-left: 80px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar:hover + .main-content {
+            margin-left: 200px;
+        }
+
+        .dashboard-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--inputColor);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+            border-color: var(--primaryColor);
+        }
+
+        .card-title {
+            color: var(--inputColor);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--primaryColor);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primaryColor);
+            margin: 10px 0;
+        }
+
+        .metric-label {
+            color: var(--inputColor);
+            opacity: 0.8;
+        }
+
+        .ai-analysis {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--inputColor);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .ai-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--inputColor);
+            border-radius: 10px;
+            color: var(--inputColor);
+            padding: 15px;
+            width: 100%;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .ai-input:focus {
+            outline: none;
+            border-color: var(--primaryColor);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .ai-button {
+            background: transparent;
+            color: var(--inputColor);
+            border: 2px solid var(--inputColor);
+            border-radius: 25px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ai-button:hover {
+            background: var(--inputColor);
+            color: var(--backgroundColor);
+            transform: scale(1.05);
+        }
+
+        .ai-result {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            min-height: 100px;
+        }
+
+        .alert-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .alert-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .alert-icon {
+            font-size: 24px;
+            color: var(--primaryColor);
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--inputColor);
+        }
+
+        .alert-time {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            color: var(--inputColor);
+        }
+
+        .notification-center {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .notification {
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid var(--inputColor);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .star-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primaryColor);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--backgroundColor);
+            font-weight: bold;
+            font-size: 1.4rem;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .stars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .star-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--inputColor);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .star-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+            border-color: var(--primaryColor);
+        }
+
+        .star-card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .star-card-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primaryColor);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--backgroundColor);
+            font-weight: bold;
+            font-size: 1.4rem;
+        }
+
+        .star-card-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--inputColor);
+        }
+
+        .star-card-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .star-card-metric {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .star-card-metric-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primaryColor);
+            margin-bottom: 5px;
+        }
+
+        .star-card-metric-label {
+            color: var(--inputColor);
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .star-card-status {
+            margin-top: 15px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .status-normal {
+            background: rgba(0, 255, 0, 0.1);
+            color: #00ff00;
+        }
+
+        .status-warning {
+            background: rgba(255, 165, 0, 0.1);
+            color: #ffa500;
+        }
+
+        .status-danger {
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-balls" id="floatingBalls"></div>
+
+    <div class="sidebar">
+        <div class="nav-item active" onclick="window.location.href='/home'">
+            <i class="ri-home-line"></i>
+            <span>首页</span>
+        </div>
+        <div class="nav-item" onclick="window.location.href='/star_dashboard'">
+            <i class="ri-user-star-line"></i>
+            <span>明星管理</span>
+        </div>
+        <div class="nav-item" onclick="window.location.href='/report_dashboard'">
+            <i class="ri-file-list-3-line"></i>
+            <span>报告管理</span>
+        </div>
+        <div class="nav-item" onclick="window.location.href='/settings'">
+            <i class="ri-settings-fill nav-icon"></i>
+            <span class="nav-text">系统设置</span>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="grid-container">
+            <div class="dashboard-card">
+                <div class="card-title">
+                    <i class="ri-user-star-line"></i>
+                    监控明星数
+                </div>
+                <div class="metric-value" id="totalStars">0</div>
+                <div class="metric-label">当前监控中的明星数量</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="card-title">
+                    <i class="ri-alarm-warning-line"></i>
+                    今日预警
+                </div>
+                <div class="metric-value" id="totalAlerts">0</div>
+                <div class="metric-label">需要关注的预警信息</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="card-title">
+                    <i class="ri-file-list-3-line"></i>
+                    报告数量
+                </div>
+                <div class="metric-value" id="totalReports">0</div>
+                <div class="metric-label">已经生成的报告</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="card-title">
+                    <i class="ri-shield-check-line"></i>
+                    系统状态
+                </div>
+                <div class="metric-value">正常</div>
+                <div class="metric-label">所有服务运行正常</div>
+            </div>
+        </div>
+
+        <div class="stars-grid" id="starsGrid">
+            <!-- 明星卡片将在这里动态生成 -->
+        </div>
+
+        <div class="ai-analysis">
+            <div class="card-title">
+                <i class="ri-robot-line"></i>
+                快速搜索
+            </div>
+            <textarea class="ai-input" rows="3" placeholder="输入您想了解的明星"></textarea>
+            <button class="ai-button">开始搜索</button>
+            
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-title">
+                <i class="ri-notification-3-line"></i>
+                最近预警
+            </div>
+            <div id="recentAlerts">
+                <!-- 预警信息将在这里动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <div class="notification-center">
+        <div class="notification">
+            <div class="alert-item">
+                <i class="ri-notification-3-line alert-icon"></i>
+                <div class="alert-content">
+                    <div class="alert-title">系统通知</div>
+                    <div class="alert-time">欢迎使用明星舆情分析系统</div>
+                </div>
+            </div>
+            </div>
+    </div>
+
+    <script>
+        // 创建浮动球动画
+        function createFloatingBalls() {
+            const container = document.getElementById('floatingBalls');
+            const colors = ['rgba(255, 255, 255, 0.1)', 'rgba(255, 255, 255, 0.15)', 'rgba(255, 255, 255, 0.2)'];
+            
+            for (let i = 0; i < 10; i++) {
+                const ball = document.createElement('div');
+                ball.className = 'ball';
+                ball.style.width = Math.random() * 100 + 50 + 'px';
+                ball.style.height = ball.style.width;
+                ball.style.left = Math.random() * 100 + '%';
+                ball.style.top = Math.random() * 100 + '%';
+                ball.style.animationDelay = Math.random() * 5 + 's';
+                ball.style.background = colors[Math.floor(Math.random() * colors.length)];
+                container.appendChild(ball);
+            }
+        }
+
+        // 页面加载完成后创建浮动球
+        window.addEventListener('load', createFloatingBalls);
+
+        // 直接更新预警数
+        async function updateAlertCount() {
+            try {
+                const response = await fetch('/api/stars/total_alerts');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        const totalAlertsElement = document.getElementById('totalAlerts');
+                        if (totalAlertsElement) {
+                            totalAlertsElement.textContent = data.alert_count;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('更新预警数失败:', error);
+            }
+        }
+
+        // 获取报告数量
+        async function updateReportsCount() {
+            try {
+                const response = await fetch('/api/reports/count');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        const totalReportsElement = document.getElementById('totalReports');
+                        if (totalReportsElement) {
+                            totalReportsElement.textContent = data.count;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('更新报告数量失败:', error);
+            }
+        }
+
+        // 获取低情感得分明星并更新最近预警
+        async function updateRecentAlerts() {
+            try {
+                const response = await fetch('/api/stars/low_sentiment');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        const recentAlertsElement = document.getElementById('recentAlerts');
+                        if (recentAlertsElement) {
+                            if (data.stars && data.stars.length > 0) {
+                                recentAlertsElement.innerHTML = data.stars.map(star => `
+                                    <div class="alert-item">
+                                        <i class="ri-alert-line alert-icon" style="color: #ff6b6b;"></i>
+                                        <div class="alert-content">
+                                            <div class="alert-title">${star.star_name}</div>
+                                            <div class="alert-time">情感得分: ${star.avg_sentiment} (低于65分)</div>
+                                        </div>
+                                    </div>
+                                `).join('');
+                            } else {
+                                recentAlertsElement.innerHTML = `
+                                    <div class="alert-item">
+                                        <i class="ri-check-line alert-icon" style="color: #51cf66;"></i>
+                                        <div class="alert-content">
+                                            <div class="alert-title">暂无预警</div>
+                                            <div class="alert-time">所有明星情感得分正常</div>
+                                        </div>
+                                    </div>
+                                `;
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('更新最近预警失败:', error);
+            }
+        }
+
+        // 更新仪表盘指标
+        async function updateDashboardMetrics(stars) {
+            // 更新明星数量
+            const totalStarsElement = document.getElementById('totalStars');
+            if (totalStarsElement) {
+                totalStarsElement.textContent = stars.length;
+            }
+            
+            // 更新预警数
+            await updateAlertCount();
+            
+            // 更新报告数量
+            await updateReportsCount();
+        }
+
+        // 获取所有明星数据
+        async function fetchAllStarsData() {
+            try {
+                console.log('开始获取明星数据...');
+                const response = await fetch('/api/stars');
+                console.log('明星数据API响应:', response);
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('明星数据:', data);
+                    if (data.status === 'success') {
+                        updateStarsGrid(data.stars);
+                        await updateDashboardMetrics(data.stars);
+                    }
+                } else {
+                    console.error('明星数据API请求失败:', response.status);
+                }
+            } catch (error) {
+                console.error('获取明星数据失败:', error);
+            }
+        }
+
+        // 更新明星网格
+        function updateStarsGrid(stars) {
+            const starsGrid = document.getElementById('starsGrid');
+            starsGrid.innerHTML = stars.map(star => `
+                <div class="star-card" onclick="window.location.href='/star/${star.id}'">
+                    <div class="star-card-header">
+                        <div class="star-card-avatar">${star.name.charAt(0)}</div>
+                        <div class="star-card-name">${star.name}</div>
+                    </div>
+                    <div class="star-card-metrics">
+                        <div class="star-card-metric">
+                            <div class="star-card-metric-value">${star.fanCount || '0'}</div>
+                            <div class="star-card-metric-label">粉丝数</div>
+                        </div>
+                        <div class="star-card-metric">
+                            <div class="star-card-metric-value">${star.topicCount || '0'}</div>
+                            <div class="star-card-metric-label">话题数</div>
+                        </div>
+                        <div class="star-card-metric">
+                            <div class="star-card-metric-value">${star.alertCount || '0'}</div>
+                            <div class="star-card-metric-label">预警数</div>
+                        </div>
+                        <div class="star-card-metric">
+                            <div class="star-card-metric-value">${star.status || '正常'}</div>
+                            <div class="star-card-metric-label">状态</div>
+                        </div>
+                    </div>
+                    <div class="star-card-status status-${star.status?.toLowerCase() || 'normal'}">
+                        ${star.status || '正常'}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 测试预警API
+        async function testAlertsAPI() {
+            try {
+                console.log('测试预警API...');
+                const response = await fetch('/api/stars/total_alerts');
+                console.log('API响应状态:', response.status);
+                const data = await response.json();
+                console.log('API返回数据:', data);
+                alert(`预警数: ${data.alert_count}`);
+            } catch (error) {
+                console.error('API测试失败:', error);
+                alert('API测试失败: ' + error.message);
+            }
+        }
+
+        // 获取监控明星总数
+        async function fetchStarsCount() {
+            try {
+                const response = await fetch('/api/stars/count');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        document.getElementById('totalStars').textContent = data.count;
+                    }
+                }
+            } catch (error) {
+                console.error('获取明星数量失败:', error);
+            }
+        }
+
+        // 页面加载完成后获取数据
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('页面加载完成，开始初始化...');
+            createFloatingBalls();
+            fetchAllStarsData();
+            fetchStarsCount();
+            
+            // 立即更新一次预警数、报告数量和最近预警
+            updateAlertCount();
+            updateReportsCount();
+            updateRecentAlerts();
+            
+            // 定期更新预警数、报告数量和最近预警
+            setInterval(updateAlertCount, 30000); // 每30秒更新一次
+            setInterval(updateReportsCount, 30000); // 每30秒更新一次
+            setInterval(updateRecentAlerts, 30000); // 每30秒更新一次
+            
+            // 绑定搜索按钮事件
+            const searchButton = document.querySelector('.ai-button');
+            const searchInput = document.querySelector('.ai-input');
+            
+            if (searchButton && searchInput) {
+                searchButton.addEventListener('click', handleSearch);
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        handleSearch();
+                    }
+                });
+            }
+        });
+
+        // 处理搜索功能
+        async function handleSearch() {
+            const searchInput = document.querySelector('.ai-input');
+            const searchButton = document.querySelector('.ai-button');
+            
+            if (!searchInput || !searchButton) return;
+            
+            const starName = searchInput.value.trim();
+            
+            if (!starName) {
+                showNotification('请输入明星姓名', 'error');
+                return;
+            }
+            
+            // 禁用按钮，显示加载状态
+            searchButton.disabled = true;
+            searchButton.textContent = '搜索中...';
+            
+            try {
+                const response = await fetch('/api/search_star', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        star_name: starName
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showNotification(data.message, 'success');
+                    searchInput.value = '';
+                    // 刷新明星列表、报告数量和最近预警
+                    fetchAllStarsData();
+                    updateReportsCount();
+                    updateRecentAlerts();
+                } else {
+                    showNotification(data.message || '搜索失败', 'error');
+                }
+            } catch (error) {
+                console.error('搜索失败:', error);
+                showNotification('搜索失败，请稍后重试', 'error');
+            } finally {
+                // 恢复按钮状态
+                searchButton.disabled = false;
+                searchButton.textContent = '开始搜索';
+            }
+        }
+
+        // 显示通知消息
+        function showNotification(message, type) {
+            // 创建通知元素
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: bold;
+                z-index: 10000;
+                max-width: 300px;
+                word-wrap: break-word;
+                animation: slideIn 0.3s ease;
+            `;
+
+            // 根据类型设置样式
+            if (type === 'success') {
+                notification.style.backgroundColor = '#27ae60';
+            } else if (type === 'error') {
+                notification.style.backgroundColor = '#e74c3c';
+            } else if (type === 'info') {
+                notification.style.backgroundColor = '#3498db';
+            } else {
+                notification.style.backgroundColor = '#3498db';
+            }
+
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            // 3秒后自动移除
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // 添加动画样式
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 添加导航项激活状态管理
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(item => {
+                const href = item.getAttribute('onclick').match(/href='([^']+)'/)[1];
+                if (currentPath === href) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

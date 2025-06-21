@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>明星舆情分析系统 - 报告详情</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :root {
+            --backgroundColor: #000;
+            --inputColor: #fff;
+            --primaryColor: #FFB7C5;
+            --secondaryColor: #FF69B4;
+            --cardBg: rgba(255, 255, 255, 0.05);
+            --borderColor: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: var(--backgroundColor);
+            color: var(--inputColor);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 导航栏样式 */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 80px;
+            background: rgba(0, 0, 0, 0.8);
+            border-right: 2px solid var(--inputColor);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+        }
+
+        .sidebar:hover {
+            width: 200px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            color: var(--inputColor);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin: 5px 0;
+            border-radius: 10px;
+            margin: 5px 10px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--primaryColor);
+        }
+
+        .nav-item i {
+            font-size: 1.5rem;
+            min-width: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item span {
+            opacity: 0;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-size: 1rem;
+            margin-left: 10px;
+        }
+
+        .sidebar:hover .nav-item span {
+            opacity: 1;
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--primaryColor);
+        }
+
+        /* 主内容区域样式 */
+        .main-content {
+            margin-left: 80px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar:hover + .main-content {
+            margin-left: 200px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 2px solid var(--inputColor);
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primaryColor);
+            text-shadow: 0 0 15px rgba(255, 183, 197, 0.3);
+        }
+
+        .back-btn {
+            background: var(--primaryColor);
+            color: var(--backgroundColor);
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 183, 197, 0.3);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            background: var(--secondaryColor);
+            box-shadow: 0 8px 20px rgba(255, 183, 197, 0.4);
+        }
+
+        /* 报告内容样式 */
+        .report-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .report-section {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--inputColor);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 25px rgba(255, 183, 197, 0.05);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--primaryColor);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .star-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .info-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primaryColor);
+            margin-bottom: 10px;
+        }
+
+        .info-label {
+            color: var(--inputColor);
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .hot-weibo-content {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primaryColor);
+        }
+
+        .weibo-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .weibo-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--inputColor);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        .comments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .comment-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 3px solid var(--secondaryColor);
+        }
+
+        .comment-content {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .comment-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--inputColor);
+            opacity: 0.7;
+            font-size: 0.8rem;
+        }
+
+        .bad-content-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .bad-content-item {
+            background: rgba(255, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 3px solid #ff0000;
+        }
+
+        .bad-content-text {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            color: #ff6b6b;
+        }
+
+        .bad-content-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--inputColor);
+            opacity: 0.7;
+            font-size: 0.8rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: var(--inputColor);
+            opacity: 0.7;
+        }
+
+        .loading i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+            .sidebar:hover {
+                width: 180px;
+            }
+            .main-content {
+                margin-left: 60px;
+            }
+            .sidebar:hover ~ .main-content {
+                margin-left: 180px;
+            }
+            .page-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .star-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="nav-item" onclick="window.location.href='/home'">
+            <i class="ri-home-line"></i>
+            <span>首页</span>
+        </div>
+        <div class="nav-item" onclick="window.location.href='/star_dashboard'">
+            <i class="ri-user-star-line"></i>
+            <span>明星管理</span>
+        </div>
+        <div class="nav-item active" onclick="window.location.href='/report_dashboard'">
+            <i class="ri-file-list-3-line"></i>
+            <span>报告管理</span>
+        </div>
+        <div class="nav-item" onclick="window.location.href='/settings'">
+            <i class="ri-settings-fill nav-icon"></i>
+            <span class="nav-text">系统设置</span>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">报告详情</h1>
+            <button class="back-btn" onclick="window.location.href='/report_dashboard'">
+                <i class="ri-arrow-left-line"></i>
+                返回报告管理
+            </button>
+        </div>
+
+        <div class="report-container">
+            <div id="loading" class="loading">
+                <i class="ri-loader-4-line"></i>
+                <p>正在加载报告数据...</p>
+            </div>
+
+            <div id="reportContent" style="display: none;">
+                <!-- 明星基本信息 -->
+                <div class="report-section">
+                    <h2 class="section-title">
+                        <i class="ri-user-star-line"></i>
+                        明星基本信息
+                    </h2>
+                    <div class="star-info">
+                        <div class="info-card">
+                            <div class="info-value" id="starName">-</div>
+                            <div class="info-label">明星姓名</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-value" id="followerCount">-</div>
+                            <div class="info-label">粉丝数量</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-value" id="followingCount">-</div>
+                            <div class="info-label">关注数量</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-value" id="createDate">-</div>
+                            <div class="info-label">报告生成时间</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 热门微博 -->
+                <div class="report-section">
+                    <h2 class="section-title">
+                        <i class="ri-fire-line"></i>
+                        热门微博
+                    </h2>
+                    <div id="hotWeiboContent" class="hot-weibo-content">
+                        <div class="weibo-text">暂无热门微博数据</div>
+                    </div>
+                </div>
+
+                <!-- 热门评论 -->
+                <div class="report-section">
+                    <h2 class="section-title">
+                        <i class="ri-chat-3-line"></i>
+                        热门评论
+                    </h2>
+                    <div id="commentsList" class="comments-list">
+                        <p style="text-align: center; opacity: 0.7;">暂无热门评论数据</p>
+                    </div>
+                </div>
+
+                <!-- 恶意事件 -->
+                <div class="report-section">
+                    <h2 class="section-title">
+                        <i class="ri-error-warning-line"></i>
+                        恶意事件
+                    </h2>
+                    <div id="badContentList" class="bad-content-list">
+                        <p style="text-align: center; opacity: 0.7;">暂无恶意事件数据</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取URL参数
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // 格式化数字
+        function formatNumber(num) {
+            if (!num) return '0';
+            if (num >= 10000) {
+                return (num / 10000).toFixed(1) + '万';
+            }
+            return num.toString();
+        }
+
+        // 格式化日期
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('zh-CN');
+        }
+
+        // 加载报告数据
+        async function loadReportData() {
+            const starId = getUrlParameter('star_id');
+            if (!starId) {
+                showError('缺少明星ID参数');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/report_detail/${starId}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    displayReportData(data.report);
+                } else {
+                    showError(data.message || '加载报告失败');
+                }
+            } catch (error) {
+                console.error('加载报告错误:', error);
+                showError('加载报告失败，请稍后重试');
+            }
+        }
+
+        // 显示报告数据
+        function displayReportData(report) {
+            // 隐藏加载状态
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('reportContent').style.display = 'block';
+
+            // 填充基本信息
+            document.getElementById('starName').textContent = report.star_nick_name || report.star_id;
+            document.getElementById('followerCount').textContent = formatNumber(report.follower_count);
+            document.getElementById('followingCount').textContent = formatNumber(report.following_count);
+            document.getElementById('createDate').textContent = formatDate(report.create_date);
+
+            // 填充热门微博
+            const hotWeiboContent = document.getElementById('hotWeiboContent');
+            if (report.hot_weibo) {
+                hotWeiboContent.innerHTML = `
+                    <div class="weibo-text">${report.hot_weibo}</div>
+                    <div class="weibo-meta">
+                        <span>微博ID: ${report.hot_weibo_mblogid || '未知'}</span>
+                        <span>点赞数: ${formatNumber(report.hot_weibo_attitudes || 0)}</span>
+                    </div>
+                `;
+            }
+
+            // 填充热门评论
+            const commentsList = document.getElementById('commentsList');
+            if (report.comments && report.comments.length > 0) {
+                commentsList.innerHTML = report.comments.map(comment => `
+                    <div class="comment-item">
+                        <div class="comment-content">${comment.content}</div>
+                        <div class="comment-meta">
+                            <span>用户: ${comment.user_id}</span>
+                            <span>点赞: ${formatNumber(comment.likes)}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // 填充恶意事件
+            const badContentList = document.getElementById('badContentList');
+            if (report.bad_content && report.bad_content.length > 0) {
+                badContentList.innerHTML = report.bad_content.map(item => `
+                    <div class="bad-content-item">
+                        <div class="bad-content-text">${item.content}</div>
+                        <div class="bad-content-meta">
+                            <span>情感得分: ${item.sentiment_score}</span>
+                            <span>关键词ID: ${item.keyword_id}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // 显示错误信息
+        function showError(message) {
+            document.getElementById('loading').innerHTML = `
+                <i class="ri-error-warning-line"></i>
+                <p>${message}</p>
+            `;
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            loadReportData();
+        });
+    </script>
+</body>
+</html> 
